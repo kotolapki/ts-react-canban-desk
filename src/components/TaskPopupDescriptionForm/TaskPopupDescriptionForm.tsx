@@ -19,23 +19,23 @@ function TaskPopupDescriptionForm({
   changeTaskDescription}: TaskPopupDescriptionFormProps) {
   const [inputValue, setInputValue] = useState(initialValue);
   
-  function onSubmitHandler(e: React.FormEvent<HTMLFormElement>) {
+  function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     onSubmitChangeTaskDescription(inputValue, deskIndex, taskIndex);
     onClickChangeTaskDescriptionFormVisibility();
     changeTaskDescription(inputValue);
   }
 
-  function onChangeHandler(e: React.ChangeEvent<HTMLInputElement>) {
+  function onChange(e: React.ChangeEvent<HTMLInputElement>) {
     setInputValue(e.target.value);
   }
 
-  function onClickHandler() {
+  function onClick() {
     onClickChangeTaskDescriptionFormVisibility();
   }
 
   return (
-    <TaskPopupForm action='#' method='POST' onSubmit={onSubmitHandler} onClick={(e) => e.stopPropagation()}>
+    <TaskPopupForm onSubmit={onSubmit} onClick={(e) => e.stopPropagation()}>
       <TaskInputLabel htmlFor='taskDescription'>Change description</TaskInputLabel>
       <TaskDescriptionInput
         name='taskDescription'
@@ -44,11 +44,11 @@ function TaskPopupDescriptionForm({
         type='text' 
         id='taskDescription' 
         value={inputValue}
-        onChange={onChangeHandler}
+        onChange={onChange}
       />
       <FormBtnsWrapper>
         <FormSubmitBtn type='submit'>Confirm</FormSubmitBtn>
-        <CloseInputFormBtn type='button' onClick={onClickHandler}/>
+        <CloseInputFormBtn type='button' onClick={onClick}/>
       </FormBtnsWrapper>
     </TaskPopupForm>
   )

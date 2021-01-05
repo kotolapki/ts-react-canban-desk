@@ -30,15 +30,15 @@ function TaskElement({
   onSubmitChangeComment,
   onClickDeleteComment
 }: TaskElementProps) {
-  const [taskPopupVisibility, setTaskPopupVisibility] = useState(false);
+  const [hasTaskClicked, setHasTaskClicked] = useState(false);
 
-  function onClickHandler(e: React.MouseEvent<HTMLButtonElement>) {
+  function onClick(e: React.MouseEvent<HTMLButtonElement>) {
     e.stopPropagation();
     onClickRemoveTask(deskIndex, taskIndex);
   }
 
   function onClickChangeTaskPopupVisibility() {
-    setTaskPopupVisibility(prev => !prev);
+    setHasTaskClicked(prev => !prev);
   }
 
   return (
@@ -46,11 +46,11 @@ function TaskElement({
       <TaskItem onClick={onClickChangeTaskPopupVisibility}>
         <Container>
           <TaskText>{taskText}</TaskText>
-          <DeleteTaskButton aria-label='delete task' onClick={onClickHandler}/>
+          <DeleteTaskButton aria-label='delete task' onClick={onClick}/>
         </Container>
         <CommentsCounter>comments: {task.comments.length}</CommentsCounter>
       </TaskItem>
-      {taskPopupVisibility && <TaskPopup 
+      {hasTaskClicked && <TaskPopup 
         username={username}
         deskIndex={deskIndex}
         taskIndex={taskIndex}

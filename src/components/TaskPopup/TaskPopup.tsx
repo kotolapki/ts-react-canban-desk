@@ -31,8 +31,8 @@ function TaskPopup({
   onClickDeleteComment
 }: TaskPopupProps) {
   const [taskDescription, setTaskDescription] = useState('Add task description');
-  const [taskDescriptionFormVisibility, setTaskDescriptionFormVisibility] = useState(false);
-  const [commentBtnsWrapperVisibility, setCommentBtnsWrapperVisibility] = useState(false);
+  const [hasTaskDescriptionClicked, setHasTaskDescriptionClicked] = useState(false);
+  const [hasCommentFormFocused, setHasCommentFormFocused] = useState(false);
 
   useEffect(() => {
     const parsedDesks = JSON.parse(localStorage.getItem('desks')!);
@@ -55,16 +55,16 @@ function TaskPopup({
 
   useEffect(() => {
     function handleWindowClick(e: MouseEvent) {
-      setTaskDescriptionFormVisibility(false);
+      setHasTaskDescriptionClicked(false);
     }
 
     window.addEventListener('click', handleWindowClick);
 
     return () => window.removeEventListener('click', handleWindowClick);
-  }, [setTaskDescriptionFormVisibility]);
+  }, [hasTaskDescriptionClicked]);
 
   function onClickChangeTaskDescriptionFormVisibility() {
-    setTaskDescriptionFormVisibility(prev => !prev);
+    setHasTaskDescriptionClicked(prev => !prev);
   }
 
   function changeTaskDescription(value: string) {
@@ -72,21 +72,21 @@ function TaskPopup({
   }
 
   function onFocusShowCommentBtnsWrapper() {
-    setCommentBtnsWrapperVisibility(true);
+    setHasCommentFormFocused(true);
   }
 
   function hideCommentBtnsWrapper() {
-    setCommentBtnsWrapperVisibility(false);
+    setHasCommentFormFocused(false);
   }
 
-  function popupClickHandler(e: React.MouseEvent) {
+  function onClick(e: React.MouseEvent) {
     const target = e.target as Element;
 
     if (target.id === 'overlay' || target.id === 'hidePopupBtn') {
       onClickChangeTaskPopupVisibility();
     }
 
-    setCommentBtnsWrapperVisibility(false);
+    setHasCommentFormFocused(false);
   }
 
   function handleDescriptionClick(e) {
@@ -95,7 +95,7 @@ function TaskPopup({
   }
 
   return (
-    <TaskPopupOverlay id='overlay' onClick={popupClickHandler}>
+    <TaskPopupOverlay id='overlay' onClick={onClick}>
       <TaskPopupContainer>
         <TaskPopupHeader>
           <TaskName>{task.title}</TaskName>
@@ -104,7 +104,7 @@ function TaskPopup({
         <DeskName>В доске: {deskname}</DeskName>
         <TaskAuthor>Автор: {task.author}</TaskAuthor>
         <TaskDescriptionHeader>Task description</TaskDescriptionHeader>
-        {taskDescriptionFormVisibility ?
+        {hasTaskDescriptionClicked ?
           (<TaskPopupDescriptionForm
             onSubmitChangeTaskDescription={onSubmitChangeTaskDescription}
             onClickChangeTaskDescriptionFormVisibility={onClickChangeTaskDescriptionFormVisibility}
@@ -122,7 +122,7 @@ function TaskPopup({
           taskIndex={taskIndex}
           onSubmitAddNewComment={onSubmitAddNewComment}
           onFocusShowCommentBtnsWrapper={onFocusShowCommentBtnsWrapper}
-          commentBtnsWrapperVisibility={commentBtnsWrapperVisibility}
+          hasCommentFormFocused={hasCommentFormFocused}
           hideCommentBtnsWrapper={hideCommentBtnsWrapper}
         />
         <ul>
@@ -136,7 +136,6 @@ function TaskPopup({
               taskIndex={taskIndex}
               onSubmitChangeComment={onSubmitChangeComment}
               onClickDeleteComment={onClickDeleteComment}
-              
             />)
           }
         </ul>

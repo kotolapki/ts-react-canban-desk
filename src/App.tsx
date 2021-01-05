@@ -5,7 +5,7 @@ import './assets/css/fonts.css';
 import './assets/css/common.css';
 import './styles.css';
 import styled from 'styled-components';
-import getRandomId from './utils/getRandomId';
+import { v4 as uuidv4} from 'uuid';
 import Autorization from './components/Autorization';
 import Header from './components/Header';
 import Desk from './components/Desk';
@@ -13,11 +13,12 @@ import Desk from './components/Desk';
 export interface Comment {
   author: string,
   text: string,
-  id: number
+  id: string
 }
+
 export interface Task {
   title: string,
-  id: number,
+  id: string,
   author: string,
   description: string,
   comments: Comment[]
@@ -25,19 +26,19 @@ export interface Task {
 
 export interface TasksDesk {
   title: string,
-  id: number,
+  id: string,
   tasks: Task[]
 }
 
 function App() {
-  const [autorizationStatus, setAutorizationStatus] = useState(false);
+  const [hasUserAuthorized, setHasUserAuthorized] = useState(false);
   const [username, setUsername] = useState('');
   const [desks, setDesks] = useState<TasksDesk[]>([]);
 
   useEffect(() => {
     if (localStorage.getItem('lastUser')) {
       setUsername(localStorage.getItem('lastUser') || '');
-      setAutorizationStatus(true);
+      setHasUserAuthorized(true);
     }
 
     if (localStorage.getItem('desks')) {
@@ -46,28 +47,22 @@ function App() {
     }
   }, []);
 
+  useEffect(() => {
+    localStorage.setItem('desks', JSON.stringify(desks));
+  });
+
   function handleChangeUser(username: string) {
     localStorage.setItem('lastUser', username);
-    setAutorizationStatus(true);
+    setHasUserAuthorized(true);
     setUsername(username);
   }
 
   function handleChangeAutorizationStatus() {
-    setAutorizationStatus(false);
+    setHasUserAuthorized(false);
   }
 
   function onSubmitAddNewDesk(deskname: string) {
-    const newDesk = {title: deskname, id: getRandomId(), tasks:[]};
-
-    if (localStorage.getItem('desks')) {
-      const parsedDesks = JSON.parse(localStorage.getItem('desks') || '');
-      parsedDesks.push(newDesk);
-      localStorage.setItem('desks', JSON.stringify(parsedDesks)); 
-    } else {
-      const desks = [newDesk];
-      localStorage.setItem('desks', JSON.stringify(desks));
-    }
-
+    const newDesk = {title: deskname, id: uuidv4(), tasks:[]};
     setDesks(prev => [...prev, newDesk]);
   }
 
@@ -79,19 +74,17 @@ function App() {
   function onClickRemoveDesk(index: number) {
     const changedDesks: TasksDesk[] = [...desks];
     changedDesks.splice(index, 1);
-    localStorage.setItem('desks', JSON.stringify(changedDesks));
     setDesks(changedDesks);
   }
 
   function onSubmitChangeDeskHeader(value: string, index: number) {
     const changedDesks: TasksDesk[] = [...desks];
     changedDesks[index]['title'] = value;
-    localStorage.setItem('desks', JSON.stringify(changedDesks));
     setDesks(changedDesks);
   }
 
   function onSubmitAddNewTask(value: string, index: number, username: string) {
-    const newTask = {title: value, id: getRandomId(), description: '', author: username, comments: []};
+    const newTask = {title: value, id: uuidv4(), description: '', author: username, comments: []};
     const changedDesks: TasksDesk[] = [...desks];
 
     if (changedDesks[index].tasks) {
@@ -100,55 +93,49 @@ function App() {
       changedDesks[index].tasks = [newTask];
     }
     
-    localStorage.setItem('desks', JSON.stringify(changedDesks));
     setDesks(changedDesks);
   }
 
   function onClickRemoveTask(deskIndex: number, taskIndex: number) {
     const changedDesks: TasksDesk[] = [...desks];
     changedDesks[deskIndex].tasks.splice(taskIndex, 1);
-    localStorage.setItem('desks', JSON.stringify(changedDesks));
     setDesks(changedDesks);
   }
 
   function onSubmitChangeTaskDescription(value: string, deskIndex: number, taskIndex: number) {
     const changedDesks: TasksDesk[] = [...desks];
     changedDesks[deskIndex].tasks[taskIndex].description = value;
-    localStorage.setItem('desks', JSON.stringify(changedDesks));
     setDesks(changedDesks);
   }
 
   function onSubmitAddNewComment(author: string, value: string, deskIndex: number, taskIndex: number) {
-    const newComment = {author: author, text: value, id: getRandomId()}
+    const newComment = {author: author, text: value, id: uuidv4()}
     const changedDesks: TasksDesk[] = [...desks];
     changedDesks[deskIndex].tasks[taskIndex].comments.push(newComment);
-    localStorage.setItem('desks', JSON.stringify(changedDesks));
     setDesks(changedDesks);
   }
 
   function onSubmitChangeComment(value: string, deskIndex: number, taskIndex: number, commentIndex: number) {
     const changedDesks: TasksDesk[] = [...desks];
     changedDesks[deskIndex].tasks[taskIndex].comments[commentIndex].text = value;
-    localStorage.setItem('desks', JSON.stringify(changedDesks));
     setDesks(changedDesks);
   }
 
   function onClickDeleteComment(deskIndex: number, taskIndex: number, commentIndex: number) {
     const changedDesks: TasksDesk[] = [...desks];
     changedDesks[deskIndex].tasks[taskIndex].comments.splice(commentIndex, 1);
-    localStorage.setItem('desks', JSON.stringify(changedDesks));
     setDesks(changedDesks);
   }
 
   return (
     <Container>
       <HiddenHeader>Canban desk</HiddenHeader>
-      {autorizationStatus ? (
+      {hasUserAuthorized ? (
         <>
           <Header 
             username={username} 
             handleChangeAutorizationStatus={handleChangeAutorizationStatus} 
-            onSubmit={onSubmitAddNewDesk}
+            onSubmitAddNewDesk={onSubmitAddNewDesk}
             onClickRemoveAllDesks={onClickRemoveAllDesks}
           />
           <DesksContainer>
@@ -173,7 +160,7 @@ function App() {
           </DesksContainer>
         </> 
       ) : (
-        <Autorization onSubmitHandler={handleChangeUser}/> 
+        <Autorization handleChangeUser={handleChangeUser}/> 
       )}
     </Container>
   )

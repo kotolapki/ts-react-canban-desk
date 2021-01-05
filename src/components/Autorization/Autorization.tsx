@@ -2,26 +2,26 @@ import React, { ChangeEvent, FormEvent, useState } from 'react';
 import styled from 'styled-components';
 
 interface AutorizationProps {
-  onSubmitHandler: (username: string) => (void);
+  handleChangeUser: (username: string) => (void);
 }
 
-function Autorization({onSubmitHandler}: AutorizationProps) {
+function Autorization({handleChangeUser}: AutorizationProps) {
   const [inputValue, setInputValue] = useState('');
 
   function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    onSubmitHandler(inputValue);
+    handleChangeUser(inputValue);
   }
 
-  function onChangeHandler(e: ChangeEvent<HTMLInputElement>) {
+  function onChange(e: ChangeEvent<HTMLInputElement>) {
     setInputValue(e.target.value);
   }
 
   return (
     <Container>
-      <Form action='#' method='POST' onSubmit={onSubmit}>
+      <Form onSubmit={onSubmit}>
         <Label htmlFor='login'>Enter your name</Label>
-        <Input type='text' name='login' id='login' autoComplete='off' placeholder='Your name' value={inputValue} onChange={onChangeHandler} required/>
+        <Input type='text' name='login' id='login' autoComplete='off' placeholder='Your name' value={inputValue} onChange={onChange} required/>
         <SubmitBtn type='submit'>Confirm</SubmitBtn>
       </Form>
     </Container>

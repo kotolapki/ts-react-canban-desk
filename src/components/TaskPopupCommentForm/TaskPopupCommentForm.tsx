@@ -7,7 +7,7 @@ interface TaskPopupCommentFormProps {
   taskIndex: number,
   onSubmitAddNewComment: (author: string, value: string, deskIndex: number, taskIndex: number) => void,
   onFocusShowCommentBtnsWrapper: () => void,
-  commentBtnsWrapperVisibility: boolean,
+  hasCommentFormFocused: boolean,
   hideCommentBtnsWrapper: () => void
 }
 
@@ -17,24 +17,24 @@ function TaskPopupCommentForm({
   taskIndex, 
   onSubmitAddNewComment, 
   onFocusShowCommentBtnsWrapper, 
-  commentBtnsWrapperVisibility, 
+  hasCommentFormFocused, 
   hideCommentBtnsWrapper
 }: TaskPopupCommentFormProps) {
   const [inputValue, setInputValue] = useState('');
 
-  function onSubmitHandler(e: React.FormEvent<HTMLFormElement>) {
+  function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     onSubmitAddNewComment(username, inputValue, deskIndex, taskIndex);
     hideCommentBtnsWrapper();
     e.currentTarget.reset();
   }
 
-  function onChangeHandler(e: React.ChangeEvent<HTMLInputElement>) {
+  function onChange(e: React.ChangeEvent<HTMLInputElement>) {
     setInputValue(e.target.value);
   }
 
   return (
-    <TaskPopupForm action='#' method='POST' onSubmit={onSubmitHandler} onClick={e => e.stopPropagation()}>
+    <TaskPopupForm onSubmit={onSubmit} onClick={e => e.stopPropagation()}>
       <TaskCommentLabel htmlFor='comment'>Enter new comment</TaskCommentLabel>
       <TaskCommentTextInput 
         name='comment' 
@@ -43,10 +43,10 @@ function TaskPopupCommentForm({
         type='text' 
         id='comment' 
         onFocus={() => onFocusShowCommentBtnsWrapper()} 
-        onChange={onChangeHandler}
+        onChange={onChange}
         required
       />
-      {commentBtnsWrapperVisibility && 
+      {hasCommentFormFocused && 
         <FormBtnsWrapper>
           <FormSubmitBtn type='submit'>Confirm</FormSubmitBtn>
           <CloseInputFormBtn type='button' aria-label='hide comment controls' onClick={() => hideCommentBtnsWrapper()}/>

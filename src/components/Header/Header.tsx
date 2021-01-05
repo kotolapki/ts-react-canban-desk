@@ -4,20 +4,20 @@ import styled from 'styled-components';
 interface HeaderProps {
   username: string,
   handleChangeAutorizationStatus: () => void,
-  onSubmit: (deskname: string) => void,
+  onSubmitAddNewDesk: (deskname: string) => void,
   onClickRemoveAllDesks: () => void,
 }
 
-function Header({username, handleChangeAutorizationStatus, onSubmit, onClickRemoveAllDesks}: HeaderProps) {
+function Header({username, handleChangeAutorizationStatus, onSubmitAddNewDesk, onClickRemoveAllDesks}: HeaderProps) {
   const [inputValue, setInputValue] = useState('');
 
-  function onSubmitHandler(e: React.FormEvent<HTMLFormElement>) {
+  function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    onSubmit(inputValue);
+    onSubmitAddNewDesk(inputValue);
     e.currentTarget.reset();
   }
 
-  function onChangeHandler(e: React.ChangeEvent<HTMLInputElement>) {
+  function onChange(e: React.ChangeEvent<HTMLInputElement>) {
     setInputValue(e.target.value);
   }
 
@@ -25,9 +25,9 @@ function Header({username, handleChangeAutorizationStatus, onSubmit, onClickRemo
     <AppHeader>
       <WelcomeText>Hello, {username}!</WelcomeText>
       <Button type='button' onClick={handleChangeAutorizationStatus}>Change user</Button>
-      <NewDeskForm action='#' method='POST' onSubmit={onSubmitHandler}>
+      <NewDeskForm onSubmit={onSubmit}>
         <FormLabel htmlFor='deskname'>Enter new deskname</FormLabel>
-        <FormInput type='text' name='deskname' id='deskname' placeholder='Deskname' autoComplete='off' onChange={onChangeHandler} required/>
+        <FormInput type='text' name='deskname' id='deskname' placeholder='Deskname' autoComplete='off' onChange={onChange} required/>
         <Button type='submit'>Confirm</Button>
       </NewDeskForm>
       <RemoveDesksButton onClick={onClickRemoveAllDesks}>Remove all desks</RemoveDesksButton>

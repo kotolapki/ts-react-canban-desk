@@ -31,31 +31,31 @@ function Desk({
   onSubmitChangeComment,
   onClickDeleteComment
 }: DeskProps) {
-  const [changeHeaderFormVisibility, setChangeHeaderFormVisibility] = useState(false);
+  const [hasDeskHeaderClicked, setHasDeskHeaderClicked] = useState(false);
   const [inputValue, setInputValue] = useState('');
 
   function changeFormVisibility() {
-    setChangeHeaderFormVisibility(prev => !prev);
+    setHasDeskHeaderClicked(prev => !prev);
   }
 
-  function onSubmitHandler(e: React.FormEvent<HTMLFormElement>) {
+  function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     onSubmitAddNewTask(inputValue, deskIndex, username);
     setInputValue('');
   }
 
-  function onChangeHandler(e: React.ChangeEvent<HTMLInputElement>) {
+  function onChange(e: React.ChangeEvent<HTMLInputElement>) {
     setInputValue(e.target.value);
   }
 
   function onBlurHideHeaderForm() {
-    setChangeHeaderFormVisibility(false)
+    setHasDeskHeaderClicked(false)
   }
 
   return (
     <DeskContainer>
       <DeskHeaderWrapper>
-        {changeHeaderFormVisibility? (
+        {hasDeskHeaderClicked? (
           <ChangeHeaderForm 
             deskname={title} 
             index={deskIndex} 
@@ -65,14 +65,14 @@ function Desk({
           />
           ) : (
           <>
-            <DeskHeader onClick={() => setChangeHeaderFormVisibility(true)}>{title}</DeskHeader>
+            <DeskHeader onClick={() => setHasDeskHeaderClicked(true)}>{title}</DeskHeader>
             <RemoveDeskButton type='button' onClick={() => {onClickRemoveDesk(deskIndex)}}>Remove desk</RemoveDeskButton>
           </>
         )}
       </DeskHeaderWrapper>
-      <NewTaskForm action='#' method='POST' onSubmit={onSubmitHandler}>
+      <NewTaskForm onSubmit={onSubmit}>
         <NewTaskLabel htmlFor='newTask'>New task</NewTaskLabel>
-        <NewTaskInput type='text' name='newTask' id='newTask' placeholder='New task' autoComplete='off' value={inputValue} onChange={onChangeHandler} required/>
+        <NewTaskInput type='text' name='newTask' id='newTask' placeholder='New task' autoComplete='off' value={inputValue} onChange={onChange} required/>
         <AddNewTaskButton type='submit'>Confirm</AddNewTaskButton>
       </NewTaskForm>
       <ul>

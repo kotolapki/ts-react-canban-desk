@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 
-interface ChangeHeaderFormProps {
+interface Props {
   deskname: string,
   index: number,
   onSubmitChangeDeskHeader: (value: string, index: number) => void,
@@ -9,7 +9,7 @@ interface ChangeHeaderFormProps {
   onBlurHideHeaderForm: () => void
 }
 
-function ChangeHeaderForm({deskname, index, onSubmitChangeDeskHeader, changeFormVisibility, onBlurHideHeaderForm}: ChangeHeaderFormProps) {
+function ChangeHeaderForm({deskname, index, onSubmitChangeDeskHeader, changeFormVisibility, onBlurHideHeaderForm}: Props) {
   const [inputValue, setInputValue] = useState(deskname);
   const textInput = useRef<HTMLInputElement>(null);
 
@@ -19,20 +19,20 @@ function ChangeHeaderForm({deskname, index, onSubmitChangeDeskHeader, changeForm
     }
   });
 
-  function onChangeHandler(e: React.ChangeEvent<HTMLInputElement>) {
+  function onChange(e: React.ChangeEvent<HTMLInputElement>) {
     setInputValue(e.target.value);
   }
 
-  function onSubmitHandler(e: React.FormEvent<HTMLFormElement>) {
+  function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     onSubmitChangeDeskHeader(inputValue, index);
     changeFormVisibility();
   }
 
   return (
-    <HeaderForm action='#' method='POST' onSubmit={onSubmitHandler} onBlur={onBlurHideHeaderForm}>
+    <HeaderForm onSubmit={onSubmit} onBlur={onBlurHideHeaderForm}>
       <Label>Change deskname</Label>
-      <Input type='text' ref={textInput} name='deskname' id='deskname' placeholder={inputValue} value={inputValue} autoComplete='off' onChange={onChangeHandler} required/>
+      <Input type='text' ref={textInput} name='deskname' id='deskname' placeholder={inputValue} value={inputValue} autoComplete='off' onChange={onChange} required/>
     </HeaderForm>
   )
 }

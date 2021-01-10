@@ -4,12 +4,12 @@ import styled from 'styled-components';
 interface Props {
   deskname: string,
   deskId: string,
-  onSubmitChangeDeskHeader: (title: string, id: string) => void,
+  updateDeskTitle: (title: string, id: string) => void,
   changeFormVisibility: () => void,
   onBlurHideHeaderForm: () => void
 }
 
-function ChangeHeaderForm({deskname, deskId, onSubmitChangeDeskHeader, changeFormVisibility, onBlurHideHeaderForm}: Props) {
+function ChangeHeaderForm({deskname, deskId, updateDeskTitle, changeFormVisibility, onBlurHideHeaderForm}: Props) {
   const [inputValue, setInputValue] = useState(deskname);
   const textInput = useRef<HTMLInputElement>(null);
 
@@ -25,7 +25,7 @@ function ChangeHeaderForm({deskname, deskId, onSubmitChangeDeskHeader, changeFor
 
   function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    onSubmitChangeDeskHeader(inputValue, deskId);
+    updateDeskTitle(inputValue, deskId);
     changeFormVisibility();
   }
 

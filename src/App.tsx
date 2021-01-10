@@ -51,18 +51,16 @@ function App() {
     });
   }
 
-  function onSubmitChangeDeskHeader(title: string, id: string) {  //спросить!
-    const changedDesks = [...state.desks];
-
-    changedDesks.forEach(desk => {
-      if (desk.id === id) {
-        desk.title = title;
-      }
-    });
-
+  function updateDeskTitle(title: string, id: string) {
     setState({
       ...state, 
-      desks: changedDesks
+      desks: state.desks.map(desk => {
+        if (desk.id === id) {
+          desk.title = title;
+        }
+
+        return desk;
+      })
     });
   }
 
@@ -82,18 +80,16 @@ function App() {
     });
   }
 
-  function onSubmitChangeTaskDescription(description: string, id: string) {  //спросить!
-    const changedTasks = [...state.tasks];
-    
-    changedTasks.forEach(task => {
-      if (task.id === id) {
-        task.description = description;
-      }
-    });
-
+  function onSubmitChangeTaskDescription(description: string, id: string) {
     setState({
       ...state,
-      tasks: changedTasks
+      tasks: state.tasks.map(task => {
+        if (task.id === id) {
+          task.description = description;
+        }
+
+        return task;
+      })
     });
   }
 
@@ -106,18 +102,16 @@ function App() {
     });
   }
 
-  function onSubmitChangeComment(text: string, id: string) { //спросить!
-    const changedComments = [...state.comments];
-
-    changedComments.forEach(comment => {
-      if (comment.id === id) {
-        comment.text = text;
-      }
-    });
-    
+  function onSubmitChangeComment(text: string, id: string) {
     setState({
       ...state,
-      comments: changedComments
+      comments: state.comments.map(comment => {
+        if (comment.id === id) {
+          comment.text = text;
+        }
+
+        return comment;
+      })
     });
   }
 
@@ -150,7 +144,7 @@ function App() {
                   comments={state.comments}
                   deskId={desk.id} 
                   onClickRemoveDesk={onClickRemoveDesk} 
-                  onSubmitChangeDeskHeader={onSubmitChangeDeskHeader}
+                  updateDeskTitle={updateDeskTitle}
                   onSubmitAddNewTask={onSubmitAddNewTask}
                   onClickRemoveTask={onClickRemoveTask}
                   onSubmitChangeTaskDescription={onSubmitChangeTaskDescription}

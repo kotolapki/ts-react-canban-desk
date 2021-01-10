@@ -11,7 +11,7 @@ interface DeskProps {
   comments: Comment[],
   deskId: string,
   onClickRemoveDesk: (id: string) => void,
-  onSubmitChangeDeskHeader: (title: string, id: string) => void,
+  updateDeskTitle: (title: string, id: string) => void,
   onSubmitAddNewTask: (title: string, id: string, username: string) => void,
   onClickRemoveTask: (id: string) => void,
   onSubmitChangeTaskDescription: (description: string, id: string) => void,
@@ -27,7 +27,7 @@ function Desk({
   comments,
   deskId, 
   onClickRemoveDesk, 
-  onSubmitChangeDeskHeader, 
+  updateDeskTitle, 
   onSubmitAddNewTask, 
   onClickRemoveTask,
   onSubmitChangeTaskDescription,
@@ -63,7 +63,7 @@ function Desk({
           <ChangeHeaderForm 
             deskname={title} 
             deskId={deskId} 
-            onSubmitChangeDeskHeader={onSubmitChangeDeskHeader} 
+            updateDeskTitle={updateDeskTitle} 
             changeFormVisibility={changeFormVisibility}
             onBlurHideHeaderForm={onBlurHideHeaderForm}
           />

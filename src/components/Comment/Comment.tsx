@@ -1,23 +1,17 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import {Comment} from '../../App';
+import { Comment as CommentType } from '../../types';
 
 interface CommentProps {
-  comment: Comment,
+  comment: CommentType,
   username: string,
-  commentIndex: number,
-  deskIndex: number,
-  taskIndex: number,
-  onSubmitChangeComment: (value: string, deskIndex: number, taskIndex: number, commentIndex: number) => void,
-  onClickDeleteComment: (deskIndex: number, taskIndex: number, commentIndex: number) => void
+  onSubmitChangeComment: (text: string, id: string) => void,
+  onClickDeleteComment: (id: string) => void
 }
 
-function CommentElement({
+function Comment({
   comment, 
   username, 
-  commentIndex, 
-  deskIndex, 
-  taskIndex, 
   onSubmitChangeComment, 
   onClickDeleteComment,
 }: CommentProps) {
@@ -40,12 +34,12 @@ function CommentElement({
 
   function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    onSubmitChangeComment(inputValue, deskIndex, taskIndex, commentIndex);
+    onSubmitChangeComment(inputValue, comment.id);
     setHasCommentClicked(false);
   }
 
   return (
-    <Item onClick={(e) => e.stopPropagation()}>
+    <Root onClick={(e) => e.stopPropagation()}>
       <Author>{comment.author}</Author>
       {hasCommentClicked ?
         (
@@ -72,18 +66,18 @@ function CommentElement({
           {username === comment.author && 
             <BtnsWrapper>
               <Button type='button' onClick={onClickShowCommentForm}>change</Button>
-              <Button type='button' onClick={() => onClickDeleteComment(deskIndex, taskIndex, commentIndex)}>delete</Button>
+              <Button type='button' onClick={() => onClickDeleteComment(comment.id)}>delete</Button>
             </BtnsWrapper>
           }
         </>)
       }
-    </Item>
+    </Root>
   )
 }
 
-export default CommentElement;
+export default Comment;
 
-const Item = styled.li`
+const Root = styled.li`
   margin-bottom: 10px;
 `
 

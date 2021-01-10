@@ -3,13 +3,13 @@ import styled from 'styled-components';
 
 interface Props {
   deskname: string,
-  index: number,
-  onSubmitChangeDeskHeader: (value: string, index: number) => void,
+  deskId: string,
+  onSubmitChangeDeskHeader: (title: string, id: string) => void,
   changeFormVisibility: () => void,
   onBlurHideHeaderForm: () => void
 }
 
-function ChangeHeaderForm({deskname, index, onSubmitChangeDeskHeader, changeFormVisibility, onBlurHideHeaderForm}: Props) {
+function ChangeHeaderForm({deskname, deskId, onSubmitChangeDeskHeader, changeFormVisibility, onBlurHideHeaderForm}: Props) {
   const [inputValue, setInputValue] = useState(deskname);
   const textInput = useRef<HTMLInputElement>(null);
 
@@ -17,7 +17,7 @@ function ChangeHeaderForm({deskname, index, onSubmitChangeDeskHeader, changeForm
     if (textInput.current !== null) {
       textInput.current.focus();
     }
-  });
+  }, []);
 
   function onChange(e: React.ChangeEvent<HTMLInputElement>) {
     setInputValue(e.target.value);
@@ -25,7 +25,7 @@ function ChangeHeaderForm({deskname, index, onSubmitChangeDeskHeader, changeForm
 
   function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    onSubmitChangeDeskHeader(inputValue, index);
+    onSubmitChangeDeskHeader(inputValue, deskId);
     changeFormVisibility();
   }
 

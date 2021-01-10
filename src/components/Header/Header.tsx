@@ -3,12 +3,12 @@ import styled from 'styled-components';
 
 interface HeaderProps {
   username: string,
-  handleChangeAutorizationStatus: () => void,
+  handleSignOut: () => void,
   onSubmitAddNewDesk: (deskname: string) => void,
   onClickRemoveAllDesks: () => void,
 }
 
-function Header({username, handleChangeAutorizationStatus, onSubmitAddNewDesk, onClickRemoveAllDesks}: HeaderProps) {
+function Header({username, handleSignOut, onSubmitAddNewDesk, onClickRemoveAllDesks}: HeaderProps) {
   const [inputValue, setInputValue] = useState('');
 
   function onSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -24,7 +24,7 @@ function Header({username, handleChangeAutorizationStatus, onSubmitAddNewDesk, o
   return (
     <AppHeader>
       <WelcomeText>Hello, {username}!</WelcomeText>
-      <Button type='button' onClick={handleChangeAutorizationStatus}>Change user</Button>
+      <Button type='button' onClick={handleSignOut}>Change user</Button>
       <NewDeskForm onSubmit={onSubmit}>
         <FormLabel htmlFor='deskname'>Enter new deskname</FormLabel>
         <FormInput type='text' name='deskname' id='deskname' placeholder='Deskname' autoComplete='off' onChange={onChange} required/>

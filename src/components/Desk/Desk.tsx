@@ -1,27 +1,31 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { TasksDesk } from '../../App';
+import { Task as TaskType, Comment} from '../../types';
 import ChangeHeaderForm from '../ChangeHeaderForm';
-import TaskElement from '../TaskElement';
+import Task from '../Task';
 
 interface DeskProps {
+  title: string,
   username: string,
-  desk: TasksDesk,
-  deskIndex: number,
-  onClickRemoveDesk: (index: number) => void,
-  onSubmitChangeDeskHeader: (value: string, index: number) => void,
-  onSubmitAddNewTask: (value: string, index: number, username: string) => void,
-  onClickRemoveTask: (deskIndex: number, taskIndex: number) => void,
-  onSubmitChangeTaskDescription: (value: string, deskIndex: number, taskIndex: number) => void,
-  onSubmitAddNewComment: (author: string, value: string, deskIndex: number, taskIndex: number) => void,
-  onSubmitChangeComment: (value: string, deskIndex: number, taskIndex: number, commentIndex: number) => void,
-  onClickDeleteComment: (deskIndex: number, taskIndex: number, commentIndex: number) => void
+  tasks: TaskType[],
+  comments: Comment[],
+  deskId: string,
+  onClickRemoveDesk: (id: string) => void,
+  onSubmitChangeDeskHeader: (title: string, id: string) => void,
+  onSubmitAddNewTask: (title: string, id: string, username: string) => void,
+  onClickRemoveTask: (id: string) => void,
+  onSubmitChangeTaskDescription: (description: string, id: string) => void,
+  onSubmitAddNewComment: (author: string, text: string, id: string) => void,
+  onSubmitChangeComment: (text: string, id: string) => void,
+  onClickDeleteComment: (id: string) => void
 }
 
 function Desk({
+  title,
   username, 
-  desk:{title, tasks}, 
-  deskIndex, 
+  tasks, 
+  comments,
+  deskId, 
   onClickRemoveDesk, 
   onSubmitChangeDeskHeader, 
   onSubmitAddNewTask, 
@@ -40,7 +44,7 @@ function Desk({
 
   function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    onSubmitAddNewTask(inputValue, deskIndex, username);
+    onSubmitAddNewTask(inputValue, deskId, username);
     setInputValue('');
   }
 
@@ -58,7 +62,7 @@ function Desk({
         {hasDeskHeaderClicked? (
           <ChangeHeaderForm 
             deskname={title} 
-            index={deskIndex} 
+            deskId={deskId} 
             onSubmitChangeDeskHeader={onSubmitChangeDeskHeader} 
             changeFormVisibility={changeFormVisibility}
             onBlurHideHeaderForm={onBlurHideHeaderForm}
@@ -66,7 +70,7 @@ function Desk({
           ) : (
           <>
             <DeskHeader onClick={() => setHasDeskHeaderClicked(true)}>{title}</DeskHeader>
-            <RemoveDeskButton type='button' onClick={() => {onClickRemoveDesk(deskIndex)}}>Remove desk</RemoveDeskButton>
+            <RemoveDeskButton type='button' onClick={() => {onClickRemoveDesk(deskId)}}>Remove desk</RemoveDeskButton>
           </>
         )}
       </DeskHeaderWrapper>
@@ -76,16 +80,14 @@ function Desk({
         <AddNewTaskButton type='submit'>Confirm</AddNewTaskButton>
       </NewTaskForm>
       <ul>
-        {tasks.map((task, index) => {
+        {tasks.map((task) => {
           return (
-            <TaskElement 
+            <Task 
               key={task.id}
               username={username} 
               task={task} 
               deskname={title} 
-              taskText={task.title} 
-              deskIndex={deskIndex} 
-              taskIndex={index} 
+              comments={comments.filter(comment => comment.taskId === task.id)}
               onClickRemoveTask={onClickRemoveTask}
               onSubmitChangeTaskDescription={onSubmitChangeTaskDescription}
               onSubmitAddNewComment={onSubmitAddNewComment}

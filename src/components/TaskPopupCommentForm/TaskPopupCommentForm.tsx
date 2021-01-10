@@ -3,9 +3,8 @@ import styled from 'styled-components';
 
 interface TaskPopupCommentFormProps {
   username: string,
-  deskIndex: number,
-  taskIndex: number,
-  onSubmitAddNewComment: (author: string, value: string, deskIndex: number, taskIndex: number) => void,
+  taskId: string,
+  onSubmitAddNewComment: (author: string, text: string, id: string) => void,
   onFocusShowCommentBtnsWrapper: () => void,
   hasCommentFormFocused: boolean,
   hideCommentBtnsWrapper: () => void
@@ -13,8 +12,7 @@ interface TaskPopupCommentFormProps {
 
 function TaskPopupCommentForm({
   username, 
-  deskIndex, 
-  taskIndex, 
+  taskId, 
   onSubmitAddNewComment, 
   onFocusShowCommentBtnsWrapper, 
   hasCommentFormFocused, 
@@ -24,7 +22,7 @@ function TaskPopupCommentForm({
 
   function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    onSubmitAddNewComment(username, inputValue, deskIndex, taskIndex);
+    onSubmitAddNewComment(username, inputValue, taskId);
     hideCommentBtnsWrapper();
     e.currentTarget.reset();
   }

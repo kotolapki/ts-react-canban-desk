@@ -1,40 +1,36 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { Task } from '../../App';
+import { Task as TaskType, Comment} from '../../types';
 import TaskPopup from '../TaskPopup';
 
-interface TaskElementProps {
+interface TaskProps {
   username: string,
-  task: Task,
+  task: TaskType,
   deskname: string,
-  taskText: string,
-  deskIndex: number,
-  taskIndex: number,
-  onClickRemoveTask: (deskIndex: number, taskIndex: number) => void,
-  onSubmitChangeTaskDescription: (value: string, deskIndex: number, taskIndex: number) => void,
-  onSubmitAddNewComment: (author: string, value: string, deskIndex: number, taskIndex: number) => void,
-  onSubmitChangeComment: (value: string, deskIndex: number, taskIndex: number, commentIndex: number) => void,
-  onClickDeleteComment: (deskIndex: number, taskIndex: number, commentIndex: number) => void
+  comments: Comment[],
+  onClickRemoveTask: (id: string) => void,
+  onSubmitChangeTaskDescription: (description: string, id: string) => void,
+  onSubmitAddNewComment: (author: string, text: string, id: string) => void,
+  onSubmitChangeComment: (text: string, id: string) => void,
+  onClickDeleteComment: (id: string) => void
 }
 
-function TaskElement({
+function Task({
   username,
   task, 
   deskname, 
-  taskText, 
-  deskIndex, 
-  taskIndex, 
+  comments, 
   onClickRemoveTask, 
   onSubmitChangeTaskDescription,
   onSubmitAddNewComment,
   onSubmitChangeComment,
   onClickDeleteComment
-}: TaskElementProps) {
+}: TaskProps) {
   const [hasTaskClicked, setHasTaskClicked] = useState(false);
 
   function onClick(e: React.MouseEvent<HTMLButtonElement>) {
     e.stopPropagation();
-    onClickRemoveTask(deskIndex, taskIndex);
+    onClickRemoveTask(task.id);
   }
 
   function onClickChangeTaskPopupVisibility() {
@@ -43,19 +39,18 @@ function TaskElement({
 
   return (
     <>
-      <TaskItem onClick={onClickChangeTaskPopupVisibility}>
+      <Root onClick={onClickChangeTaskPopupVisibility}>
         <Container>
-          <TaskText>{taskText}</TaskText>
+          <Text>{task.title}</Text>
           <DeleteTaskButton aria-label='delete task' onClick={onClick}/>
         </Container>
-        <CommentsCounter>comments: {task.comments.length}</CommentsCounter>
-      </TaskItem>
+        <CommentsCounter>comments: {comments.length}</CommentsCounter>
+      </Root>
       {hasTaskClicked && <TaskPopup 
         username={username}
-        deskIndex={deskIndex}
-        taskIndex={taskIndex}
         deskname={deskname} 
-        task={task} 
+        task={task}
+        comments={comments}
         onClickChangeTaskPopupVisibility={onClickChangeTaskPopupVisibility}
         onSubmitChangeTaskDescription={onSubmitChangeTaskDescription}
         onSubmitAddNewComment={onSubmitAddNewComment}
@@ -66,9 +61,9 @@ function TaskElement({
   )
 }
 
-export default TaskElement;
+export default Task;
 
-const TaskItem = styled.li`
+const Root= styled.li`
   margin-bottom: 10px;
   cursor: pointer;
 `
@@ -80,7 +75,7 @@ const Container = styled.div`
   border-bottom: 1px solid black;
 `
 
-const TaskText = styled.p`
+const Text = styled.p`
   font-size: 18px;
 `
 

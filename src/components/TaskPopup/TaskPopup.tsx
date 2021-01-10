@@ -1,46 +1,35 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { Task } from '../../App';
+import { Task, Comment as CommentType } from '../../types';
 import TaskPopupDescriptionForm from '../TaskPopupDescriptionForm';
 import TaskPopupCommentForm from '../TaskPopupCommentForm';
-import CommentElement from '../CommentElement';
+import Comment from '../Comment';
 
 interface TaskPopupProps {
   username: string,
-  deskIndex: number,
-  taskIndex: number,
   deskname: string,
   task: Task,
+  comments: CommentType[],
   onClickChangeTaskPopupVisibility: () => void,
-  onSubmitChangeTaskDescription: (value: string, deskIndex: number, taskIndex: number) => void,
-  onSubmitAddNewComment: (author: string, value: string, deskIndex: number, taskIndex: number) => void,
-  onSubmitChangeComment: (value: string, deskIndex: number, taskIndex: number, commentIndex: number) => void,
-  onClickDeleteComment: (deskIndex: number, taskIndex: number, commentIndex: number) => void
+  onSubmitChangeTaskDescription: (description: string, id: string) => void,
+  onSubmitAddNewComment: (author: string, text: string, id: string) => void,
+  onSubmitChangeComment: (text: string, id: string) => void,
+  onClickDeleteComment: (id: string) => void
 }
 
 function TaskPopup({
-  username,
-  deskIndex, 
-  taskIndex, 
+  username, 
   deskname, 
   task, 
+  comments,
   onClickChangeTaskPopupVisibility, 
   onSubmitChangeTaskDescription,
   onSubmitAddNewComment,
   onSubmitChangeComment,
   onClickDeleteComment
 }: TaskPopupProps) {
-  const [taskDescription, setTaskDescription] = useState('Add task description');
   const [hasTaskDescriptionClicked, setHasTaskDescriptionClicked] = useState(false);
   const [hasCommentFormFocused, setHasCommentFormFocused] = useState(false);
-
-  useEffect(() => {
-    const parsedDesks = JSON.parse(localStorage.getItem('desks')!);
-
-    if (parsedDesks[deskIndex].tasks[taskIndex].description) {
-      setTaskDescription(parsedDesks[deskIndex].tasks[taskIndex].description);
-    }
-  }, [deskIndex, taskIndex]);
 
   useEffect(() => {
     function handleWindowKeyPress(e: KeyboardEvent) {
@@ -65,10 +54,6 @@ function TaskPopup({
 
   function onClickChangeTaskDescriptionFormVisibility() {
     setHasTaskDescriptionClicked(prev => !prev);
-  }
-
-  function changeTaskDescription(value: string) {
-    setTaskDescription(value);
   }
 
   function onFocusShowCommentBtnsWrapper() {
@@ -108,32 +93,26 @@ function TaskPopup({
           (<TaskPopupDescriptionForm
             onSubmitChangeTaskDescription={onSubmitChangeTaskDescription}
             onClickChangeTaskDescriptionFormVisibility={onClickChangeTaskDescriptionFormVisibility}
-            initialValue={taskDescription}
-            deskIndex={deskIndex}
-            taskIndex={taskIndex}
-            changeTaskDescription={changeTaskDescription}
+            initialValue={task.description}
+            taskId={task.id}
           />)
           :
-          (<TaskDescription onClick={handleDescriptionClick}>{taskDescription}</TaskDescription>)
+          (<TaskDescription onClick={handleDescriptionClick}>{task.description? task.description : 'Add task description'}</TaskDescription>)
         }
         <TaskPopupCommentForm
           username={username}
-          deskIndex={deskIndex}
-          taskIndex={taskIndex}
+          taskId={task.id}
           onSubmitAddNewComment={onSubmitAddNewComment}
           onFocusShowCommentBtnsWrapper={onFocusShowCommentBtnsWrapper}
           hasCommentFormFocused={hasCommentFormFocused}
           hideCommentBtnsWrapper={hideCommentBtnsWrapper}
         />
         <ul>
-          {task.comments.length >= 1 && task.comments.map((comment, index) => 
-            <CommentElement 
-              key={index}
+          {comments.length >= 1 && comments.map((comment) => 
+            <Comment 
+              key={comment.id}
               comment={comment}
               username={username}
-              commentIndex={index}
-              deskIndex={deskIndex}
-              taskIndex={taskIndex}
               onSubmitChangeComment={onSubmitChangeComment}
               onClickDeleteComment={onClickDeleteComment}
             />)

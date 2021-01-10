@@ -2,28 +2,23 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 
 interface TaskPopupDescriptionFormProps {
-  onSubmitChangeTaskDescription: (value: string, deskIndex: number, taskIndex: number) => void,
+  onSubmitChangeTaskDescription: (description: string, id: string) => void,
   onClickChangeTaskDescriptionFormVisibility: () => void,
   initialValue: string,
-  deskIndex: number,
-  taskIndex: number,
-  changeTaskDescription: (value: string) => void
+  taskId: string
 }
 
 function TaskPopupDescriptionForm({
   onSubmitChangeTaskDescription, 
   onClickChangeTaskDescriptionFormVisibility, 
-  initialValue, 
-  deskIndex, 
-  taskIndex,
-  changeTaskDescription}: TaskPopupDescriptionFormProps) {
+  initialValue,
+  taskId}: TaskPopupDescriptionFormProps) {
   const [inputValue, setInputValue] = useState(initialValue);
   
   function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    onSubmitChangeTaskDescription(inputValue, deskIndex, taskIndex);
+    onSubmitChangeTaskDescription(inputValue, taskId);
     onClickChangeTaskDescriptionFormVisibility();
-    changeTaskDescription(inputValue);
   }
 
   function onChange(e: React.ChangeEvent<HTMLInputElement>) {

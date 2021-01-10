@@ -9,143 +9,146 @@ import { v4 as uuidv4} from 'uuid';
 import Autorization from './components/Autorization';
 import Header from './components/Header';
 import Desk from './components/Desk';
-
-export interface Comment {
-  author: string,
-  text: string,
-  id: string
-}
-
-export interface Task {
-  title: string,
-  id: string,
-  author: string,
-  description: string,
-  comments: Comment[]
-}
-
-export interface TasksDesk {
-  title: string,
-  id: string,
-  tasks: Task[]
-}
+import { State } from './types';
+const initialUsername = localStorage.getItem('lastUser') || '';
+const initialStateJSON = localStorage.getItem('state');
+const initialState = {desks: [], tasks: [], comments: []};
 
 function App() {
-  const [hasUserAuthorized, setHasUserAuthorized] = useState(false);
-  const [username, setUsername] = useState('');
-  const [desks, setDesks] = useState<TasksDesk[]>([]);
+  const [username, setUsername] = useState(initialUsername);
+  const [state, setState] = useState<State>(initialStateJSON ? JSON.parse(initialStateJSON) : initialState);
+  const isAuthorized = Boolean(username);
 
   useEffect(() => {
-    if (localStorage.getItem('lastUser')) {
-      setUsername(localStorage.getItem('lastUser') || '');
-      setHasUserAuthorized(true);
-    }
-
-    if (localStorage.getItem('desks')) {
-      const parsedDesks = JSON.parse(localStorage.getItem('desks') || '');
-      setDesks(parsedDesks);
-    }
-  }, []);
-
-  useEffect(() => {
-    localStorage.setItem('desks', JSON.stringify(desks));
-  });
+    localStorage.setItem('state', JSON.stringify(state));
+  }, [state]);
 
   function handleChangeUser(username: string) {
     localStorage.setItem('lastUser', username);
-    setHasUserAuthorized(true);
     setUsername(username);
   }
 
-  function handleChangeAutorizationStatus() {
-    setHasUserAuthorized(false);
+  function handleSignOut() {
+    setUsername('');
   }
 
-  function onSubmitAddNewDesk(deskname: string) {
-    const newDesk = {title: deskname, id: uuidv4(), tasks:[]};
-    setDesks(prev => [...prev, newDesk]);
+  function onSubmitAddNewDesk(title: string) {
+    const newDesk = {title, id: uuidv4()};
+    setState({
+      ...state, 
+      desks: [...state.desks, newDesk]
+    });
   }
 
   function onClickRemoveAllDesks() {
-    localStorage.removeItem('desks');
-    setDesks([]);
+    setState(initialState);
   }
 
-  function onClickRemoveDesk(index: number) {
-    const changedDesks: TasksDesk[] = [...desks];
-    changedDesks.splice(index, 1);
-    setDesks(changedDesks);
+  function onClickRemoveDesk(id: string) {
+    setState({
+      ...state, 
+      desks: state.desks.filter(desk => desk.id !== id)
+    });
   }
 
-  function onSubmitChangeDeskHeader(value: string, index: number) {
-    const changedDesks: TasksDesk[] = [...desks];
-    changedDesks[index]['title'] = value;
-    setDesks(changedDesks);
+  function onSubmitChangeDeskHeader(title: string, id: string) {  //спросить!
+    const changedDesks = [...state.desks];
+
+    changedDesks.forEach(desk => {
+      if (desk.id === id) {
+        desk.title = title;
+      }
+    });
+
+    setState({
+      ...state, 
+      desks: changedDesks
+    });
   }
 
-  function onSubmitAddNewTask(value: string, index: number, username: string) {
-    const newTask = {title: value, id: uuidv4(), description: '', author: username, comments: []};
-    const changedDesks: TasksDesk[] = [...desks];
-
-    if (changedDesks[index].tasks) {
-      changedDesks[index].tasks.push(newTask);
-    } else {
-      changedDesks[index].tasks = [newTask];
-    }
+  function onSubmitAddNewTask(title: string, id: string, username: string) {
+    const newTask = {title, id: uuidv4(), description: '', author: username, deskId: id};
     
-    setDesks(changedDesks);
+    setState({
+      ...state, 
+      tasks: [...state.tasks, newTask]
+    });
   }
 
-  function onClickRemoveTask(deskIndex: number, taskIndex: number) {
-    const changedDesks: TasksDesk[] = [...desks];
-    changedDesks[deskIndex].tasks.splice(taskIndex, 1);
-    setDesks(changedDesks);
+  function onClickRemoveTask(id: string) {
+    setState({
+      ...state, 
+      tasks: state.tasks.filter(task => task.id !== id)
+    });
   }
 
-  function onSubmitChangeTaskDescription(value: string, deskIndex: number, taskIndex: number) {
-    const changedDesks: TasksDesk[] = [...desks];
-    changedDesks[deskIndex].tasks[taskIndex].description = value;
-    setDesks(changedDesks);
+  function onSubmitChangeTaskDescription(description: string, id: string) {  //спросить!
+    const changedTasks = [...state.tasks];
+    
+    changedTasks.forEach(task => {
+      if (task.id === id) {
+        task.description = description;
+      }
+    });
+
+    setState({
+      ...state,
+      tasks: changedTasks
+    });
   }
 
-  function onSubmitAddNewComment(author: string, value: string, deskIndex: number, taskIndex: number) {
-    const newComment = {author: author, text: value, id: uuidv4()}
-    const changedDesks: TasksDesk[] = [...desks];
-    changedDesks[deskIndex].tasks[taskIndex].comments.push(newComment);
-    setDesks(changedDesks);
+  function onSubmitAddNewComment(author: string, text: string, id: string) {
+    const newComment = {author: author, text, id: uuidv4(), taskId: id}
+    
+    setState({
+      ...state,
+      comments: [...state.comments, newComment]
+    });
   }
 
-  function onSubmitChangeComment(value: string, deskIndex: number, taskIndex: number, commentIndex: number) {
-    const changedDesks: TasksDesk[] = [...desks];
-    changedDesks[deskIndex].tasks[taskIndex].comments[commentIndex].text = value;
-    setDesks(changedDesks);
+  function onSubmitChangeComment(text: string, id: string) { //спросить!
+    const changedComments = [...state.comments];
+
+    changedComments.forEach(comment => {
+      if (comment.id === id) {
+        comment.text = text;
+      }
+    });
+    
+    setState({
+      ...state,
+      comments: changedComments
+    });
   }
 
-  function onClickDeleteComment(deskIndex: number, taskIndex: number, commentIndex: number) {
-    const changedDesks: TasksDesk[] = [...desks];
-    changedDesks[deskIndex].tasks[taskIndex].comments.splice(commentIndex, 1);
-    setDesks(changedDesks);
+  function onClickDeleteComment(id: string) {
+    setState({
+      ...state,
+      comments: state.comments.filter(comment => comment.id !== id)
+    });
   }
 
   return (
     <Container>
       <HiddenHeader>Canban desk</HiddenHeader>
-      {hasUserAuthorized ? (
+      {isAuthorized ? (
         <>
           <Header 
             username={username} 
-            handleChangeAutorizationStatus={handleChangeAutorizationStatus} 
+            handleSignOut={handleSignOut} 
             onSubmitAddNewDesk={onSubmitAddNewDesk}
             onClickRemoveAllDesks={onClickRemoveAllDesks}
           />
           <DesksContainer>
-            {desks.map((desk, index) => {
+            {state.desks.map((desk) => {
               return (
                 <Desk 
-                  key={desk.id} 
+                  key={desk.id}
+                  title={desk.title} 
                   username={username}
-                  desk={desk}
-                  deskIndex={index} 
+                  tasks={state.tasks.filter(task => task.deskId === desk.id)}
+                  comments={state.comments}
+                  deskId={desk.id} 
                   onClickRemoveDesk={onClickRemoveDesk} 
                   onSubmitChangeDeskHeader={onSubmitChangeDeskHeader}
                   onSubmitAddNewTask={onSubmitAddNewTask}
@@ -153,7 +156,8 @@ function App() {
                   onSubmitChangeTaskDescription={onSubmitChangeTaskDescription}
                   onSubmitAddNewComment={onSubmitAddNewComment}
                   onSubmitChangeComment={onSubmitChangeComment}
-                  onClickDeleteComment={onClickDeleteComment}
+                  onClickDeleteComment={onClickDeleteComment} 
+                  // отфильтровать таски по id доски и комменты по id таски
                 />
               )
             })}

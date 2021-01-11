@@ -56,7 +56,7 @@ function App() {
       ...state, 
       desks: state.desks.map(desk => {
         if (desk.id === id) {
-          desk.title = title;
+          return {...desk, title};
         }
 
         return desk;
@@ -85,7 +85,7 @@ function App() {
       ...state,
       tasks: state.tasks.map(task => {
         if (task.id === id) {
-          task.description = description;
+          return {...task, description};
         }
 
         return task;
@@ -107,7 +107,7 @@ function App() {
       ...state,
       comments: state.comments.map(comment => {
         if (comment.id === id) {
-          comment.text = text;
+          return {...comment, text};
         }
 
         return comment;

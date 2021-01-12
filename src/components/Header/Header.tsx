@@ -28,7 +28,7 @@ function Header() {
         <FormInput type='text' name='deskname' id='deskname' placeholder='Deskname' autoComplete='off' onChange={onChange} required/>
         <Button type='submit'>Confirm</Button>
       </NewDeskForm>
-      <RemoveDesksButton onClick={() => dispatch(removeAllDesks)}>Remove all desks</RemoveDesksButton>
+      <RemoveDesksButton onClick={() => dispatch(removeAllDesks())}>Remove all desks</RemoveDesksButton>
     </AppHeader>
   )
 }

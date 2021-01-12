@@ -1,33 +1,23 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { Task, Comment as CommentType } from '../../types';
+import { Task, State } from '../../types';
 import TaskPopupDescriptionForm from '../TaskPopupDescriptionForm';
 import TaskPopupCommentForm from '../TaskPopupCommentForm';
 import Comment from '../Comment';
+import { useSelector } from 'react-redux';
 
 interface TaskPopupProps {
-  username: string,
   deskname: string,
   task: Task,
-  comments: CommentType[],
   onClickChangeTaskPopupVisibility: () => void,
-  onSubmitChangeTaskDescription: (description: string, id: string) => void,
-  onSubmitAddNewComment: (author: string, text: string, id: string) => void,
-  onSubmitChangeComment: (text: string, id: string) => void,
-  onClickDeleteComment: (id: string) => void
 }
 
 function TaskPopup({
-  username, 
   deskname, 
   task, 
-  comments,
-  onClickChangeTaskPopupVisibility, 
-  onSubmitChangeTaskDescription,
-  onSubmitAddNewComment,
-  onSubmitChangeComment,
-  onClickDeleteComment
+  onClickChangeTaskPopupVisibility
 }: TaskPopupProps) {
+  const comments = useSelector((state: State) => state.comments).filter(comment => comment.taskId === task.id);
   const [hasTaskDescriptionClicked, setHasTaskDescriptionClicked] = useState(false);
   const [hasCommentFormFocused, setHasCommentFormFocused] = useState(false);
 
@@ -74,7 +64,7 @@ function TaskPopup({
     setHasCommentFormFocused(false);
   }
 
-  function handleDescriptionClick(e) {
+  function handleDescriptionClick(e: React.MouseEvent) {
     e.stopPropagation();
     onClickChangeTaskDescriptionFormVisibility();
   }
@@ -91,7 +81,6 @@ function TaskPopup({
         <TaskDescriptionHeader>Task description</TaskDescriptionHeader>
         {hasTaskDescriptionClicked ?
           (<TaskPopupDescriptionForm
-            onSubmitChangeTaskDescription={onSubmitChangeTaskDescription}
             onClickChangeTaskDescriptionFormVisibility={onClickChangeTaskDescriptionFormVisibility}
             initialValue={task.description}
             taskId={task.id}
@@ -100,9 +89,7 @@ function TaskPopup({
           (<TaskDescription onClick={handleDescriptionClick}>{task.description? task.description : 'Add task description'}</TaskDescription>)
         }
         <TaskPopupCommentForm
-          username={username}
           taskId={task.id}
-          onSubmitAddNewComment={onSubmitAddNewComment}
           onFocusShowCommentBtnsWrapper={onFocusShowCommentBtnsWrapper}
           hasCommentFormFocused={hasCommentFormFocused}
           hideCommentBtnsWrapper={hideCommentBtnsWrapper}
@@ -112,9 +99,6 @@ function TaskPopup({
             <Comment 
               key={comment.id}
               comment={comment}
-              username={username}
-              onSubmitChangeComment={onSubmitChangeComment}
-              onClickDeleteComment={onClickDeleteComment}
             />)
           }
         </ul>

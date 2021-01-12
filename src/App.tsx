@@ -1,164 +1,44 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
+import { useSelector } from 'react-redux';
 import './assets/css/normalize.css';
 import './assets/css/reset.css';
 import './assets/css/fonts.css';
 import './assets/css/common.css';
 import './styles.css';
 import styled from 'styled-components';
-import { v4 as uuidv4} from 'uuid';
 import Autorization from './components/Autorization';
 import Header from './components/Header';
 import Desk from './components/Desk';
 import { State } from './types';
-const initialUsername = localStorage.getItem('lastUser') || '';
-const initialStateJSON = localStorage.getItem('state');
-const initialState = {desks: [], tasks: [], comments: []};
 
 function App() {
-  const [username, setUsername] = useState(initialUsername);
-  const [state, setState] = useState<State>(initialStateJSON ? JSON.parse(initialStateJSON) : initialState);
-  const isAuthorized = Boolean(username);
+  const state = useSelector((state: State) => state);
+  const isAuthorized = Boolean(state.username);
 
   useEffect(() => {
     localStorage.setItem('state', JSON.stringify(state));
   }, [state]);
-
-  function handleChangeUser(username: string) {
-    localStorage.setItem('lastUser', username);
-    setUsername(username);
-  }
-
-  function handleSignOut() {
-    setUsername('');
-  }
-
-  function onSubmitAddNewDesk(title: string) {
-    const newDesk = {title, id: uuidv4()};
-    setState({
-      ...state, 
-      desks: [...state.desks, newDesk]
-    });
-  }
-
-  function onClickRemoveAllDesks() {
-    setState(initialState);
-  }
-
-  function onClickRemoveDesk(id: string) {
-    setState({
-      ...state, 
-      desks: state.desks.filter(desk => desk.id !== id)
-    });
-  }
-
-  function updateDeskTitle(title: string, id: string) {
-    setState({
-      ...state, 
-      desks: state.desks.map(desk => {
-        if (desk.id === id) {
-          return {...desk, title};
-        }
-
-        return desk;
-      })
-    });
-  }
-
-  function onSubmitAddNewTask(title: string, id: string, username: string) {
-    const newTask = {title, id: uuidv4(), description: '', author: username, deskId: id};
-    
-    setState({
-      ...state, 
-      tasks: [...state.tasks, newTask]
-    });
-  }
-
-  function onClickRemoveTask(id: string) {
-    setState({
-      ...state, 
-      tasks: state.tasks.filter(task => task.id !== id)
-    });
-  }
-
-  function onSubmitChangeTaskDescription(description: string, id: string) {
-    setState({
-      ...state,
-      tasks: state.tasks.map(task => {
-        if (task.id === id) {
-          return {...task, description};
-        }
-
-        return task;
-      })
-    });
-  }
-
-  function onSubmitAddNewComment(author: string, text: string, id: string) {
-    const newComment = {author: author, text, id: uuidv4(), taskId: id}
-    
-    setState({
-      ...state,
-      comments: [...state.comments, newComment]
-    });
-  }
-
-  function onSubmitChangeComment(text: string, id: string) {
-    setState({
-      ...state,
-      comments: state.comments.map(comment => {
-        if (comment.id === id) {
-          return {...comment, text};
-        }
-
-        return comment;
-      })
-    });
-  }
-
-  function onClickDeleteComment(id: string) {
-    setState({
-      ...state,
-      comments: state.comments.filter(comment => comment.id !== id)
-    });
-  }
 
   return (
     <Container>
       <HiddenHeader>Canban desk</HiddenHeader>
       {isAuthorized ? (
         <>
-          <Header 
-            username={username} 
-            handleSignOut={handleSignOut} 
-            onSubmitAddNewDesk={onSubmitAddNewDesk}
-            onClickRemoveAllDesks={onClickRemoveAllDesks}
-          />
+          <Header />
           <DesksContainer>
             {state.desks.map((desk) => {
               return (
                 <Desk 
                   key={desk.id}
-                  title={desk.title} 
-                  username={username}
-                  tasks={state.tasks.filter(task => task.deskId === desk.id)}
-                  comments={state.comments}
-                  deskId={desk.id} 
-                  onClickRemoveDesk={onClickRemoveDesk} 
-                  updateDeskTitle={updateDeskTitle}
-                  onSubmitAddNewTask={onSubmitAddNewTask}
-                  onClickRemoveTask={onClickRemoveTask}
-                  onSubmitChangeTaskDescription={onSubmitChangeTaskDescription}
-                  onSubmitAddNewComment={onSubmitAddNewComment}
-                  onSubmitChangeComment={onSubmitChangeComment}
-                  onClickDeleteComment={onClickDeleteComment} 
-                  // отфильтровать таски по id доски и комменты по id таски
+                  title={desk.title}
+                  deskId={desk.id}
                 />
               )
             })}
           </DesksContainer>
         </> 
       ) : (
-        <Autorization handleChangeUser={handleChangeUser}/> 
+        <Autorization /> 
       )}
     </Container>
   )

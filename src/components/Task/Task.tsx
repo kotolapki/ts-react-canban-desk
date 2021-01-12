@@ -1,36 +1,26 @@
 import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
-import { Task as TaskType, Comment} from '../../types';
+import { deleteTask } from '../../redux/actions';
+import { Task as TaskType, State} from '../../types';
 import TaskPopup from '../TaskPopup';
 
 interface TaskProps {
-  username: string,
   task: TaskType,
-  deskname: string,
-  comments: Comment[],
-  onClickRemoveTask: (id: string) => void,
-  onSubmitChangeTaskDescription: (description: string, id: string) => void,
-  onSubmitAddNewComment: (author: string, text: string, id: string) => void,
-  onSubmitChangeComment: (text: string, id: string) => void,
-  onClickDeleteComment: (id: string) => void
+  deskname: string
 }
 
 function Task({
-  username,
   task, 
-  deskname, 
-  comments, 
-  onClickRemoveTask, 
-  onSubmitChangeTaskDescription,
-  onSubmitAddNewComment,
-  onSubmitChangeComment,
-  onClickDeleteComment
+  deskname
 }: TaskProps) {
+  const comments = useSelector((state: State) => state.comments).filter(comment => comment.taskId === task.id);
+  const dispatch = useDispatch();
   const [hasTaskClicked, setHasTaskClicked] = useState(false);
 
   function onClick(e: React.MouseEvent<HTMLButtonElement>) {
     e.stopPropagation();
-    onClickRemoveTask(task.id);
+    dispatch(deleteTask(task.id));
   }
 
   function onClickChangeTaskPopupVisibility() {
@@ -47,15 +37,9 @@ function Task({
         <CommentsCounter>comments: {comments.length}</CommentsCounter>
       </Root>
       {hasTaskClicked && <TaskPopup 
-        username={username}
         deskname={deskname} 
         task={task}
-        comments={comments}
         onClickChangeTaskPopupVisibility={onClickChangeTaskPopupVisibility}
-        onSubmitChangeTaskDescription={onSubmitChangeTaskDescription}
-        onSubmitAddNewComment={onSubmitAddNewComment}
-        onSubmitChangeComment={onSubmitChangeComment}
-        onClickDeleteComment={onClickDeleteComment}
       />}
     </>
   )

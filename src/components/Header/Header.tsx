@@ -1,19 +1,17 @@
 import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
+import { addNewDesk, removeAllDesks, setUsername } from '../../redux/actions';
+import { State } from '../../types';
 
-interface HeaderProps {
-  username: string,
-  handleSignOut: () => void,
-  onSubmitAddNewDesk: (deskname: string) => void,
-  onClickRemoveAllDesks: () => void,
-}
-
-function Header({username, handleSignOut, onSubmitAddNewDesk, onClickRemoveAllDesks}: HeaderProps) {
+function Header() {
+  const dispatch = useDispatch();
+  const username = useSelector((state: State) => state.username);
   const [inputValue, setInputValue] = useState('');
 
   function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    onSubmitAddNewDesk(inputValue);
+    dispatch(addNewDesk(inputValue));
     e.currentTarget.reset();
   }
 
@@ -24,13 +22,13 @@ function Header({username, handleSignOut, onSubmitAddNewDesk, onClickRemoveAllDe
   return (
     <AppHeader>
       <WelcomeText>Hello, {username}!</WelcomeText>
-      <Button type='button' onClick={handleSignOut}>Change user</Button>
+      <Button type='button' onClick={() => dispatch(setUsername(''))}>Change user</Button>
       <NewDeskForm onSubmit={onSubmit}>
         <FormLabel htmlFor='deskname'>Enter new deskname</FormLabel>
         <FormInput type='text' name='deskname' id='deskname' placeholder='Deskname' autoComplete='off' onChange={onChange} required/>
         <Button type='submit'>Confirm</Button>
       </NewDeskForm>
-      <RemoveDesksButton onClick={onClickRemoveAllDesks}>Remove all desks</RemoveDesksButton>
+      <RemoveDesksButton onClick={() => dispatch(removeAllDesks)}>Remove all desks</RemoveDesksButton>
     </AppHeader>
   )
 }

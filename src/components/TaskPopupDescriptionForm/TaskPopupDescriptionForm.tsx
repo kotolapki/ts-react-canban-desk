@@ -1,23 +1,24 @@
 import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
+import { updateTaskDescription } from '../../redux/actions';
 
 interface TaskPopupDescriptionFormProps {
-  onSubmitChangeTaskDescription: (description: string, id: string) => void,
   onClickChangeTaskDescriptionFormVisibility: () => void,
   initialValue: string,
   taskId: string
 }
 
 function TaskPopupDescriptionForm({
-  onSubmitChangeTaskDescription, 
-  onClickChangeTaskDescriptionFormVisibility, 
+  onClickChangeTaskDescriptionFormVisibility,
   initialValue,
   taskId}: TaskPopupDescriptionFormProps) {
+  const dispatch = useDispatch();
   const [inputValue, setInputValue] = useState(initialValue);
   
   function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    onSubmitChangeTaskDescription(inputValue, taskId);
+    dispatch(updateTaskDescription(inputValue, taskId));
     onClickChangeTaskDescriptionFormVisibility();
   }
 

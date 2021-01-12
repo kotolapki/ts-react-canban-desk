@@ -5,11 +5,11 @@ import {
   REMOVE_DESK, 
   REMOVE_ALL_DESKS, 
   ADD_NEW_TASK, 
-  DELETE_TASK, 
+  REMOVE_TASK, 
   UPDATE_TASK_DESCRIPTION, 
   ADD_NEW_COMMENT, 
-  CHANGE_COMMENT, 
-  DELETE_COMMENT 
+  UPDATE_COMMENT, 
+  REMOVE_COMMENT 
 } from './types';
 import { v4 as uuidv4} from 'uuid';
 
@@ -72,7 +72,7 @@ export function addNewTask(title: string, deskId: string, author: string) {
 
 export function deleteTask(id: string) {
   return {
-    type: DELETE_TASK,
+    type: REMOVE_TASK,
     payload: {
       id
     }
@@ -103,7 +103,7 @@ export function addNewComment(author: string, text: string, id: string) {
 
 export function changeComment(text: string, id: string) {
   return {
-    type: CHANGE_COMMENT,
+    type: UPDATE_COMMENT,
     payload: {
       text,
       id
@@ -113,7 +113,7 @@ export function changeComment(text: string, id: string) {
 
 export function deleteComment(id: string) {
   return {
-    type: DELETE_COMMENT,
+    type: REMOVE_COMMENT,
     payload: {
       id
     }

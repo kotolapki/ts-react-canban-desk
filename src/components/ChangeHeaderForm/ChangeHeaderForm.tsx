@@ -1,15 +1,17 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
+import { updateDeskTitle } from '../../redux/actions';
 
 interface Props {
   deskname: string,
   deskId: string,
-  updateDeskTitle: (title: string, id: string) => void,
   changeFormVisibility: () => void,
   onBlurHideHeaderForm: () => void
 }
 
-function ChangeHeaderForm({deskname, deskId, updateDeskTitle, changeFormVisibility, onBlurHideHeaderForm}: Props) {
+function ChangeHeaderForm({deskname, deskId, changeFormVisibility, onBlurHideHeaderForm}: Props) {
+  const dispatch = useDispatch();
   const [inputValue, setInputValue] = useState(deskname);
   const textInput = useRef<HTMLInputElement>(null);
 
@@ -25,7 +27,7 @@ function ChangeHeaderForm({deskname, deskId, updateDeskTitle, changeFormVisibili
 
   function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    updateDeskTitle(inputValue, deskId);
+    dispatch(updateDeskTitle(inputValue, deskId));
     changeFormVisibility();
   }
 

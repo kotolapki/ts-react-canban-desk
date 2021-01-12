@@ -19,7 +19,22 @@ export interface Desk {
 }
 
 export interface State {
+  username: string,
   desks: Desk[],
   tasks: Task[],
   comments: Comment[]
+}
+
+export interface Action {
+  type: string,
+  payload: {
+    username?: string,
+    title?: string,
+    id?: string,
+    deskId?: string,
+    description?: string,
+    author?: string,
+    text?: string,
+    taskId?: string
+  }
 }

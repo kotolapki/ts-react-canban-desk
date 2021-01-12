@@ -1,40 +1,23 @@
 import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
-import { Task as TaskType, Comment} from '../../types';
+import { addNewTask, removeDesk } from '../../redux/actions';
+import { State } from '../../types';
 import ChangeHeaderForm from '../ChangeHeaderForm';
 import Task from '../Task';
 
 interface DeskProps {
   title: string,
-  username: string,
-  tasks: TaskType[],
-  comments: Comment[],
-  deskId: string,
-  onClickRemoveDesk: (id: string) => void,
-  updateDeskTitle: (title: string, id: string) => void,
-  onSubmitAddNewTask: (title: string, id: string, username: string) => void,
-  onClickRemoveTask: (id: string) => void,
-  onSubmitChangeTaskDescription: (description: string, id: string) => void,
-  onSubmitAddNewComment: (author: string, text: string, id: string) => void,
-  onSubmitChangeComment: (text: string, id: string) => void,
-  onClickDeleteComment: (id: string) => void
+  deskId: string
 }
 
 function Desk({
-  title,
-  username, 
-  tasks, 
-  comments,
-  deskId, 
-  onClickRemoveDesk, 
-  updateDeskTitle, 
-  onSubmitAddNewTask, 
-  onClickRemoveTask,
-  onSubmitChangeTaskDescription,
-  onSubmitAddNewComment,
-  onSubmitChangeComment,
-  onClickDeleteComment
+  title, 
+  deskId
 }: DeskProps) {
+  const username = useSelector((state: State) => state.username);
+  const tasks = useSelector((state: State) => state.tasks).filter(task => task.deskId === deskId);
+  const dispatch = useDispatch();
   const [hasDeskHeaderClicked, setHasDeskHeaderClicked] = useState(false);
   const [inputValue, setInputValue] = useState('');
 
@@ -44,7 +27,7 @@ function Desk({
 
   function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    onSubmitAddNewTask(inputValue, deskId, username);
+    dispatch(addNewTask(inputValue, deskId, username));
     setInputValue('');
   }
 
@@ -63,14 +46,13 @@ function Desk({
           <ChangeHeaderForm 
             deskname={title} 
             deskId={deskId} 
-            updateDeskTitle={updateDeskTitle} 
             changeFormVisibility={changeFormVisibility}
             onBlurHideHeaderForm={onBlurHideHeaderForm}
           />
           ) : (
           <>
             <DeskHeader onClick={() => setHasDeskHeaderClicked(true)}>{title}</DeskHeader>
-            <RemoveDeskButton type='button' onClick={() => {onClickRemoveDesk(deskId)}}>Remove desk</RemoveDeskButton>
+            <RemoveDeskButton type='button' onClick={() => {dispatch(removeDesk(deskId))}}>Remove desk</RemoveDeskButton>
           </>
         )}
       </DeskHeaderWrapper>
@@ -81,20 +63,13 @@ function Desk({
       </NewTaskForm>
       <ul>
         {tasks.map((task) => {
-          return (
-            <Task 
-              key={task.id}
-              username={username} 
-              task={task} 
-              deskname={title} 
-              comments={comments.filter(comment => comment.taskId === task.id)}
-              onClickRemoveTask={onClickRemoveTask}
-              onSubmitChangeTaskDescription={onSubmitChangeTaskDescription}
-              onSubmitAddNewComment={onSubmitAddNewComment}
-              onSubmitChangeComment={onSubmitChangeComment}
-              onClickDeleteComment={onClickDeleteComment}
-            />
-          )})
+            return (
+              <Task 
+                key={task.id}
+                task={task} 
+                deskname={title}
+              />)
+          })
         }
       </ul>
     </DeskContainer>

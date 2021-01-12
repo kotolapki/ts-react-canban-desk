@@ -1,28 +1,29 @@
 import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
+import { addNewComment } from '../../redux/actions';
+import { State } from '../../types';
 
 interface TaskPopupCommentFormProps {
-  username: string,
   taskId: string,
-  onSubmitAddNewComment: (author: string, text: string, id: string) => void,
   onFocusShowCommentBtnsWrapper: () => void,
   hasCommentFormFocused: boolean,
   hideCommentBtnsWrapper: () => void
 }
 
-function TaskPopupCommentForm({
-  username, 
+function TaskPopupCommentForm({ 
   taskId, 
-  onSubmitAddNewComment, 
   onFocusShowCommentBtnsWrapper, 
   hasCommentFormFocused, 
   hideCommentBtnsWrapper
 }: TaskPopupCommentFormProps) {
+  const username = useSelector((state: State) => state.username);
+  const dispatch = useDispatch();
   const [inputValue, setInputValue] = useState('');
 
   function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    onSubmitAddNewComment(username, inputValue, taskId);
+    dispatch(addNewComment(username, inputValue, taskId));
     hideCommentBtnsWrapper();
     e.currentTarget.reset();
   }

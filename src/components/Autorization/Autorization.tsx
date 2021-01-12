@@ -1,16 +1,15 @@
 import React, { ChangeEvent, FormEvent, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import styled from 'styled-components';
+import { setUsername } from '../../redux/actions';
 
-interface AutorizationProps {
-  handleChangeUser: (username: string) => (void);
-}
-
-function Autorization({handleChangeUser}: AutorizationProps) {
+function Autorization() {
+  const dispatch = useDispatch();
   const [inputValue, setInputValue] = useState('');
 
   function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    handleChangeUser(inputValue);
+    dispatch(setUsername(inputValue));
   }
 
   function onChange(e: ChangeEvent<HTMLInputElement>) {

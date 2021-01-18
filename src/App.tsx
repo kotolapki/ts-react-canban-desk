@@ -6,13 +6,13 @@ import './assets/css/fonts.css';
 import './assets/css/common.css';
 import './styles.css';
 import styled from 'styled-components';
-import Autorization from './components/Autorization';
+import Autorization from './components/Authorization';
 import Header from './components/Header';
 import Desk from './components/Desk';
-import { State } from './types';
+import { selectState } from './redux/selectors';
 
 function App() {
-  const state = useSelector((state: State) => state);
+  const state = useSelector(selectState);
   const isAuthorized = Boolean(state.username);
 
   useEffect(() => {

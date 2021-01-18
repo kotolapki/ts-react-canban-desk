@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
-import { changeComment, deleteComment } from '../../redux/actions';
-import { Comment as CommentType, State } from '../../types';
+import { updateComment, removeComment } from '../../redux/actions';
+import { selectUsername } from '../../redux/selectors';
+import { Comment as CommentType } from '../../types';
 
 interface CommentProps {
   comment: CommentType
@@ -11,7 +12,7 @@ interface CommentProps {
 function Comment({
   comment
 }: CommentProps) {
-  const username = useSelector((state: State) => state.username);
+  const username = useSelector(selectUsername);
   const dispatch = useDispatch();
   const [hasCommentClicked, setHasCommentClicked] = useState(false);
   const [inputValue, setInputValue] = useState(comment.text);
@@ -32,7 +33,7 @@ function Comment({
 
   function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    dispatch(changeComment(inputValue, comment.id));
+    dispatch(updateComment(inputValue, comment.id));
     setHasCommentClicked(false);
   }
 
@@ -64,7 +65,7 @@ function Comment({
           {username === comment.author && 
             <BtnsWrapper>
               <Button type='button' onClick={onClickShowCommentForm}>change</Button>
-              <Button type='button' onClick={() => dispatch(deleteComment(comment.id))}>delete</Button>
+              <Button type='button' onClick={() => dispatch(removeComment(comment.id))}>delete</Button>
             </BtnsWrapper>
           }
         </>)

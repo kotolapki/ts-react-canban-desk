@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
-import { deleteTask } from '../../redux/actions';
-import { Task as TaskType, State} from '../../types';
+import { removeTask } from '../../redux/actions';
+import { selectCommentsByTaskId } from '../../redux/selectors';
+import { Task as TaskType } from '../../types';
 import TaskPopup from '../TaskPopup';
 
 interface TaskProps {
@@ -14,13 +15,13 @@ function Task({
   task, 
   deskname
 }: TaskProps) {
-  const comments = useSelector((state: State) => state.comments).filter(comment => comment.taskId === task.id);
+  const comments = useSelector(selectCommentsByTaskId(task.id));
   const dispatch = useDispatch();
   const [hasTaskClicked, setHasTaskClicked] = useState(false);
 
   function onClick(e: React.MouseEvent<HTMLButtonElement>) {
     e.stopPropagation();
-    dispatch(deleteTask(task.id));
+    dispatch(removeTask(task.id));
   }
 
   function onClickChangeTaskPopupVisibility() {

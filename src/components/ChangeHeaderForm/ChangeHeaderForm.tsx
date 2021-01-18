@@ -4,15 +4,15 @@ import styled from 'styled-components';
 import { updateDeskTitle } from '../../redux/actions';
 
 interface Props {
-  deskname: string,
+  title: string,
   deskId: string,
   changeFormVisibility: () => void,
   onBlurHideHeaderForm: () => void
 }
 
-function ChangeHeaderForm({deskname, deskId, changeFormVisibility, onBlurHideHeaderForm}: Props) {
+function ChangeHeaderForm({title, deskId, changeFormVisibility, onBlurHideHeaderForm}: Props) {
   const dispatch = useDispatch();
-  const [inputValue, setInputValue] = useState(deskname);
+  const [inputValue, setInputValue] = useState(title);
   const textInput = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -33,8 +33,8 @@ function ChangeHeaderForm({deskname, deskId, changeFormVisibility, onBlurHideHea
 
   return (
     <HeaderForm onSubmit={onSubmit} onBlur={onBlurHideHeaderForm}>
-      <Label>Change deskname</Label>
-      <Input type='text' ref={textInput} name='deskname' id='deskname' placeholder={inputValue} value={inputValue} autoComplete='off' onChange={onChange} required/>
+      <Label>Change desk name</Label>
+      <Input type='text' ref={textInput} name='deskName' id='deskName' placeholder={inputValue} value={inputValue} autoComplete='off' onChange={onChange} required/>
     </HeaderForm>
   )
 }

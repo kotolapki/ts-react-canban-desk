@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { addNewComment } from '../../redux/actions';
-import { State } from '../../types';
+import { selectUsername } from '../../redux/selectors';
 
 interface TaskPopupCommentFormProps {
   taskId: string,
@@ -17,7 +17,7 @@ function TaskPopupCommentForm({
   hasCommentFormFocused, 
   hideCommentBtnsWrapper
 }: TaskPopupCommentFormProps) {
-  const username = useSelector((state: State) => state.username);
+  const username = useSelector(selectUsername);
   const dispatch = useDispatch();
   const [inputValue, setInputValue] = useState('');
 

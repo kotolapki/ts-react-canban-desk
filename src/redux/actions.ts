@@ -1,7 +1,7 @@
 import { 
   SET_USERNAME, 
   ADD_NEW_DESK, 
-  UPDATE_DESKNAME, 
+  UPDATE_DESK_TITLE, 
   REMOVE_DESK, 
   REMOVE_ALL_DESKS, 
   ADD_NEW_TASK, 
@@ -34,7 +34,7 @@ export function addNewDesk(title: string) {
 
 export function updateDeskTitle(title: string, id: string) {
   return {
-    type: UPDATE_DESKNAME,
+    type: UPDATE_DESK_TITLE,
     payload: {
       title,
       id
@@ -70,7 +70,7 @@ export function addNewTask(title: string, deskId: string, author: string) {
   }
 }
 
-export function deleteTask(id: string) {
+export function removeTask(id: string) {
   return {
     type: REMOVE_TASK,
     payload: {
@@ -101,7 +101,7 @@ export function addNewComment(author: string, text: string, id: string) {
   }
 }
 
-export function changeComment(text: string, id: string) {
+export function updateComment(text: string, id: string) {
   return {
     type: UPDATE_COMMENT,
     payload: {
@@ -111,7 +111,7 @@ export function changeComment(text: string, id: string) {
   }
 }
 
-export function deleteComment(id: string) {
+export function removeComment(id: string) {
   return {
     type: REMOVE_COMMENT,
     payload: {

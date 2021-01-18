@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { Task, State } from '../../types';
+import { Task } from '../../types';
 import TaskPopupDescriptionForm from '../TaskPopupDescriptionForm';
 import TaskPopupCommentForm from '../TaskPopupCommentForm';
 import Comment from '../Comment';
 import { useSelector } from 'react-redux';
+import { selectCommentsByTaskId } from '../../redux/selectors';
 
 interface TaskPopupProps {
   deskname: string,
@@ -17,7 +18,7 @@ function TaskPopup({
   task, 
   onClickChangeTaskPopupVisibility
 }: TaskPopupProps) {
-  const comments = useSelector((state: State) => state.comments).filter(comment => comment.taskId === task.id);
+  const comments = useSelector(selectCommentsByTaskId(task.id));
   const [hasTaskDescriptionClicked, setHasTaskDescriptionClicked] = useState(false);
   const [hasCommentFormFocused, setHasCommentFormFocused] = useState(false);
 

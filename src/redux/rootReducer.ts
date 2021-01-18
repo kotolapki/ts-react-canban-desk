@@ -1,8 +1,9 @@
-import { State, Desk, Task, Comment, Action } from './../types';
+import { State, Desk, Task, Comment } from './../types';
+import { Action } from './types';
 import { 
   SET_USERNAME, 
   ADD_NEW_DESK, 
-  UPDATE_DESKNAME, 
+  UPDATE_DESK_TITLE, 
   REMOVE_DESK, 
   REMOVE_ALL_DESKS, 
   ADD_NEW_TASK, 
@@ -22,7 +23,7 @@ export const rootReducer = (state = initialStateJSON ? JSON.parse(initialStateJS
       return {...state, username: action.payload.username}
     case ADD_NEW_DESK:
       return {...state, desks: [...state.desks, action.payload]}
-    case UPDATE_DESKNAME:
+    case UPDATE_DESK_TITLE:
       return {...state, 
         desks: state.desks.map((desk: Desk) => {
           if (desk.id === action.payload.id) {

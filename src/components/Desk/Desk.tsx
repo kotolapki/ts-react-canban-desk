@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { addNewTask, removeDesk } from '../../redux/actions';
-import { State } from '../../types';
+import { selectTasksByDeskId, selectUsername } from '../../redux/selectors';
 import ChangeHeaderForm from '../ChangeHeaderForm';
 import Task from '../Task';
 
@@ -15,8 +15,8 @@ function Desk({
   title, 
   deskId
 }: DeskProps) {
-  const username = useSelector((state: State) => state.username);
-  const tasks = useSelector((state: State) => state.tasks).filter(task => task.deskId === deskId);
+  const username = useSelector(selectUsername);
+  const tasks = useSelector(selectTasksByDeskId(deskId));
   const dispatch = useDispatch();
   const [hasDeskHeaderClicked, setHasDeskHeaderClicked] = useState(false);
   const [inputValue, setInputValue] = useState('');
@@ -44,7 +44,7 @@ function Desk({
       <DeskHeaderWrapper>
         {hasDeskHeaderClicked? (
           <ChangeHeaderForm 
-            deskname={title} 
+            title={title} 
             deskId={deskId} 
             changeFormVisibility={changeFormVisibility}
             onBlurHideHeaderForm={onBlurHideHeaderForm}

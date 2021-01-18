@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { addNewDesk, removeAllDesks, setUsername } from '../../redux/actions';
-import { State } from '../../types';
+import { selectUsername } from '../../redux/selectors';
 
 function Header() {
   const dispatch = useDispatch();
-  const username = useSelector((state: State) => state.username);
+  const username = useSelector(selectUsername);
   const [inputValue, setInputValue] = useState('');
 
   function onSubmit(e: React.FormEvent<HTMLFormElement>) {
@@ -25,7 +25,7 @@ function Header() {
       <Button type='button' onClick={() => dispatch(setUsername(''))}>Change user</Button>
       <NewDeskForm onSubmit={onSubmit}>
         <FormLabel htmlFor='deskname'>Enter new deskname</FormLabel>
-        <FormInput type='text' name='deskname' id='deskname' placeholder='Deskname' autoComplete='off' onChange={onChange} required/>
+        <FormInput type='text' name='deskname' id='deskname' placeholder='Desk name' autoComplete='off' onChange={onChange} required/>
         <Button type='submit'>Confirm</Button>
       </NewDeskForm>
       <RemoveDesksButton onClick={() => dispatch(removeAllDesks())}>Remove all desks</RemoveDesksButton>

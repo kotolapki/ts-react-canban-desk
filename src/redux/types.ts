@@ -10,14 +10,14 @@ export const ADD_NEW_COMMENT = 'ADD_NEW_COMMENT';
 export const UPDATE_COMMENT = 'UPDATE_COMMENT';
 export const REMOVE_COMMENT = 'REMOVE_COMMENT';
 
-interface SetUsernameAction {
+export interface SetUsernameAction {
   type: typeof SET_USERNAME,
   payload: {
     username: string
   }
 }
 
-interface AddNewDeskAction {
+export interface AddNewDeskAction {
   type: typeof ADD_NEW_DESK,
   payload: {
     title: string,
@@ -25,7 +25,7 @@ interface AddNewDeskAction {
   }
 }
 
-interface UpdateDeskTitleAction {
+export interface UpdateDeskTitleAction {
   type: typeof UPDATE_DESK_TITLE,
   payload: {
     title: string,
@@ -33,18 +33,18 @@ interface UpdateDeskTitleAction {
   }
 }
 
-interface RemoveDeskAction {
+export interface RemoveDeskAction {
   type: typeof REMOVE_DESK,
   payload: {
     deskId: string
   }
 }
 
-interface RemoveAllDesksAction {
+export interface RemoveAllDesksAction {
   type: typeof REMOVE_ALL_DESKS
 }
 
-interface AddNewTaskAction {
+export interface AddNewTaskAction {
   type: typeof ADD_NEW_TASK,
   payload: {
     title: string, 
@@ -55,14 +55,14 @@ interface AddNewTaskAction {
   }
 }
 
-interface RemoveTaskAction {
+export interface RemoveTaskAction {
   type: typeof REMOVE_TASK,
   payload: {
     id: string
   }
 }
 
-interface UpdateTaskDescriptionAction {
+export interface UpdateTaskDescriptionAction {
   type: typeof UPDATE_TASK_DESCRIPTION,
   payload: {
     description: string, 
@@ -70,7 +70,7 @@ interface UpdateTaskDescriptionAction {
   }
 }
 
-interface AddNewCommentAction {
+export interface AddNewCommentAction {
   type: typeof ADD_NEW_COMMENT,
   payload: {
     author: string, 
@@ -80,7 +80,7 @@ interface AddNewCommentAction {
   }
 }
 
-interface UpdateCommentAction {
+export interface UpdateCommentAction {
   type: typeof UPDATE_COMMENT,
   payload: {
     text: string,
@@ -88,7 +88,7 @@ interface UpdateCommentAction {
   }
 }
 
-interface RemoveCommentAction {
+export interface RemoveCommentAction {
   type: typeof REMOVE_COMMENT,
   payload: {
     id: string
